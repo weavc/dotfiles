@@ -2,10 +2,15 @@
 VERSIONS_GO := 1.21.8
 VERSIONS_PYTHON := 3
 VERSIONS_DOTNET := 8.0
+VERSIONS_NODE := 18
+VERSIONS_NVM := 0.39.7
 
 PATHS_GO = $$HOME/.local
 PATHS_GOHOME = $$HOME/dev/go
 PATHS_DOTNET = $$HOME/.local
+PATHS_CARGO = $$HOME/.cargo
+
+PATH_VAR = $HOME/.local/bin /opt/bin ${PATHS_CARGO}/bin ${PATHS_DOTNET}/dotnet ${PATHS_GO}/go/bin ${PATHS_GOHOME}/bin $HOME/.cargo/bin
 
 # ======== Utility ==========
 
@@ -53,7 +58,7 @@ setup: mkdirs sshgen/auth sshgen/ed25519 install/basics install/fish install/doc
 setup/wsl: mkdirs sshgen/auth sshgen/rsa sshgen/ed25519 install/basics install/fish install/docker install/python install/dotnet dotfiles/apply
 
 ## setup/server: Setup script for headless/server environments.
-.PHONY: setup/server
+.PHONY: setup/server/tmp/go-install-make.tar.gz
 setup/server: mkdirs sshgen/auth sshgen/ed25519 install/basics install/fish install/docker install/python dotfiles/apply
 
 # ======== Dotfiles ==========
@@ -115,6 +120,14 @@ install/vscode:
 	sudo apt update
 	sudo apt install code
 
+## install/nvm: Install NVM.
+install/nvm:
+	mkdir -p $$HOME/.nvm
+	rm -rf $$HOME/.nvm/*
+	curl -L -o /tmp/nvm-installer-make.sh https://raw.githubusercontent.com/nvm-sh/nvm/v${VERSIONS_NVM}/install.sh
+	chmod u+x /tmp/nvm-installer-make.sh
+	NODE_VERSION=${VERSIONS_NODE} /tmp/nvm-installer-make.sh
+
 # ======== SSH Keygen ==========
 
 ## sshgen: Create ssh keys.
@@ -135,4 +148,3 @@ sshgen/ed25519:
 .PHONY: sshgen/auth
 sshgen/auth:
 	ssh-import-id gh:weavc
-	

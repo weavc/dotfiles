@@ -21,7 +21,7 @@ function fish_prompt
   set -l prompt_string "$fish $normal_color"(set_color white --bold)(whoami)"$normal_color"
 
   if test "$theme_ignore_ssh_awareness" != 'yes' -a -n "$SSH_CLIENT$SSH_TTY"
-    set prompt_string "$fish "(hostname -s)" $fish"
+    set prompt_string "$fish $normal_color"(set_color white --bold)(whoami)"@"(hostname -s)"$normal_color"
   end
 
   if test $last_command_status -eq 0
